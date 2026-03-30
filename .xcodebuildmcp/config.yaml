@@ -1,0 +1,21 @@
+schemaVersion: 1
+enabledWorkflows:
+  - coverage
+  - debugging
+  - device
+  - logging
+  - macos
+  - project-discovery
+  - project-scaffolding
+  - simulator
+  - simulator-management
+  - swift-package
+  - ui-automation
+  - utilities
+  - xcode-ide
+sessionDefaults:
+  simulatorName: iPhone 17 Pro
+  useLatestOS: true
+  derivedDataPath: ./DerivedData
+  preferXcodebuild: true
+  platform: iOS
