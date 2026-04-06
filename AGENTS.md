@@ -11,4 +11,18 @@ Use built-in `swift-format` as the source of truth for code style and linting.
 
 ## Tooling
 
-Use `XcodeBuildMCP` by default for Xcode, Swift package, simulator, build, test, and related Apple-platform workflows in this repository.
+Use `XcodeBuildMCP` by default for build, test, simulator, device, and related Apple-platform workflows in this repository, regardless of project type.
+
+Fallback order when `XcodeBuildMCP` is unavailable:
+
+- Try the `xcodebuildmcp` CLI.
+- If the task is SwiftPM-only, fall back to `swift build` / `swift test`.
+- Otherwise, fall back to `xcodebuild`.
+
+## Specs And Contracts
+
+If a change modifies behavior, public API, generation rules, file formats, or invariants, update the corresponding spec or contract document in the same logic change.
+
+## Temporary State Hygiene
+
+Tests and tools that create temporary files or directories must clean them up automatically.
