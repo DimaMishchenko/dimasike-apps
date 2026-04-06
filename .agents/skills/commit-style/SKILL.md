@@ -1,6 +1,6 @@
 ---
 name: commit-style
-description: Create and review Git commit messages using a Gitmoji-based convention. Use for all commit-related tasks in this repository, including creating commit subjects, amending or rewording commits, and validating that commit messages follow the format `<intention> [scope?]: <message>` with semantic intent guidance.
+description: "Create and review Git commit messages using a Gitmoji-based convention. Use for all commit-related tasks in this repository, including creating commit subjects, amending or rewording commits, and validating that commit messages follow the format `<intention> [scope?]: <message>` with semantic intent guidance."
 ---
 
 # Commit Style
