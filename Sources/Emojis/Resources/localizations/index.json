@@ -1,0 +1,25 @@
+{
+  "availableLocaleIdentifiers" : [
+    "ar",
+    "de",
+    "en",
+    "es-MX",
+    "fil",
+    "fr",
+    "hi",
+    "id",
+    "it",
+    "ja",
+    "ko",
+    "nl",
+    "pl",
+    "pt",
+    "ru",
+    "th",
+    "tr",
+    "vi",
+    "zh",
+    "zh-Hant"
+  ],
+  "defaultLocaleIdentifier" : "en"
+}

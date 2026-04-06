@@ -1,0 +1,246 @@
+{
+  "availableLocaleIdentifiers" : [
+    "ar",
+    "de",
+    "en",
+    "es-MX",
+    "fil",
+    "fr",
+    "hi",
+    "id",
+    "it",
+    "ja",
+    "ko",
+    "nl",
+    "pl",
+    "pt",
+    "ru",
+    "th",
+    "tr",
+    "vi",
+    "zh",
+    "zh-Hant"
+  ],
+  "cldrVersion" : "48",
+  "defaultLocaleIdentifier" : "en",
+  "generatedAt" : "2026-04-06T17:20:30Z",
+  "schemaVersion" : 2,
+  "sourceFiles" : [
+    {
+      "name" : "annotations.json",
+      "sha256" : "e4fa6c26d663647de5316f921a666062cc44702b333049a15b6b775d5f1933c4",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-derived-full\/annotationsDerived\/ar\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "486a878923ef6d8303fd9b8f4472486c60575cb64a811a7dbef451bf064c4496",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-derived-full\/annotationsDerived\/de\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "15c9457afa703a32dcc78d54626418a91e820fe0ddd67b7d491c4c4d9f5846ab",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-derived-full\/annotationsDerived\/en\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "79667ce35fdb21e205c8e140ecbde29ef4335eca93f614a21562ddc8e76515d6",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-derived-full\/annotationsDerived\/es-MX\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "b8b91c86679d375f9ac36b0911f4c07a57b2dc344c62a30280c291e29d4f27b8",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-derived-full\/annotationsDerived\/fil\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "012bb08af81a2ea0686e8fe069388f02dbd025d62b02d7423067c452b37e8855",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-derived-full\/annotationsDerived\/fr\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "5fc6b2c76c15a8db26c7a090c0f05c9ddc1e0e301a466f9c567385a7cb7020cc",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-derived-full\/annotationsDerived\/hi\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "4fc73d3ce7351bee6be5f320744c32d81d58f7526b8a79c1bc5e0ef69e415f55",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-derived-full\/annotationsDerived\/id\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "0957417d36590b3f48956fa4e992b5c68c6f9b23e13c2e6feb26323488edd610",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-derived-full\/annotationsDerived\/it\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "6c5496486b89d57cb6f9f0701c8052d44c23b08703d796e5e45c1d65f3902edf",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-derived-full\/annotationsDerived\/ja\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "69e006aaa9f0ea4568e061b0018a0f11898e19f77606e85b111b95555299f52f",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-derived-full\/annotationsDerived\/ko\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "ce2a92668829f6ebba8b8e6b31650e03facebcc6354d5df84d03604a94a28468",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-derived-full\/annotationsDerived\/nl\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "489db8825f8a02737595a94b0b0e6a165acbc3705f6207a4fe0aa064a645362d",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-derived-full\/annotationsDerived\/pl\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "23423f141587e22c8ee07a78f8cca45a59f11fca1cc5269f63dece4b02d4b8b6",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-derived-full\/annotationsDerived\/pt\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "c7106a9d14b485636620972d147232ec2e45e0d779422ed208dabad8fa186782",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-derived-full\/annotationsDerived\/ru\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "11e23db9b3605763c637a6fc0ec76c466a48dafde2347bcdb52ed646706e505c",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-derived-full\/annotationsDerived\/th\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "3fdd3797f361e8c41a9e088db3ac9ca25a7da7209ba858249c949a889695a6ca",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-derived-full\/annotationsDerived\/tr\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "2af5588927fb68bb01aedd28aa2947aa77d31374a53bd008844d426b6ba2f062",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-derived-full\/annotationsDerived\/vi\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "d7c618f1ac87131cf60e6e736899145e5e1cc152aa3a7015c07b6ec09ceac28e",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-derived-full\/annotationsDerived\/zh-Hant\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "1ff96249af6fc69067f2dfabc26b450786a93d8048f2764ecfad53fd64953f92",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-derived-full\/annotationsDerived\/zh\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "bd722b651c4461e0b3e48a886bb4bac2db970f8567029c5442ce82b6f07e8346",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-full\/annotations\/ar\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "bfd22f5226d874843a28b6efec01db7e47dfae4ed802eceab8b416550f09e3c2",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-full\/annotations\/de\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "f22083cb86dffb63a643d5bacb5d9899f82d2fa5d388ad4f3aed72184acef505",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-full\/annotations\/en\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "cd8db979dd4f94ba8362c6fa35b75defad697979dfa37dbcb1474b4abc6ef940",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-full\/annotations\/es-MX\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "795ccd4e50c53618293d341468cf607ce425c87da43b146d2a363bea92f5f3b5",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-full\/annotations\/fil\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "33da052f74782791989e6226d60871c846799e077a5a7fb4e87ecfa7ca385733",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-full\/annotations\/fr\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "ffca03eeb25ca34f7b9e14e0d35a02c2c5081b35297736f969be94aaa5c2fb37",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-full\/annotations\/hi\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "05012824e827cdb81337f6e77cdbc1f6ff09ca5dd9111b5f62dcd49c28146449",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-full\/annotations\/id\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "ec8e0b6339a10de3d5a2297fa6db84239b363cc305504552c64abe4eead67ac6",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-full\/annotations\/it\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "737ce4bea3d52d904f7744eb7653ea55100c99232255609a913f69a5a8c3d6c1",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-full\/annotations\/ja\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "197be7720f3cc64126fee01bad5fdb668e51de5674ce5ce5ada0bd5028f3417e",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-full\/annotations\/ko\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "d86882905773fb28f9e808ac4818041c5a89888b36a0f95dd33ce63939943118",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-full\/annotations\/nl\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "81420256d40acb05a9a512cdde5c67bafa6a373df51c93a83f02ecc200cba6fa",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-full\/annotations\/pl\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "ebaa8e177bdafd49afe17e126274215565a420c53823f7082733b672a02c06cb",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-full\/annotations\/pt\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "c483d312051dbea379bcd2ac6dec6f2712572c0c9a5d073031f4702b030e99a9",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-full\/annotations\/ru\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "fcc6301f8b0935921ecc3f6c8fe14873d5caadc433df2130d5657356d046c389",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-full\/annotations\/th\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "203f92597ad0dbffde89083cb760c1585843e52f488c0c7866406f2ef6e881cc",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-full\/annotations\/tr\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "a0a8d4c3d6fc52d843e0d69051fb025a27bce6aee2b3eade5a1488b6dd9adffd",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-full\/annotations\/vi\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "59158786a4a0b0937a7f3a370cbe5bc79ae7f3a6155edd55914dceadf0f0a35f",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-full\/annotations\/zh-Hant\/annotations.json"
+    },
+    {
+      "name" : "annotations.json",
+      "sha256" : "8d2dfe9bf41894bd17c9c1a1906a31bf0ccc06204bf4b77c2ab2b0d8f79a5fdf",
+      "url" : "https:\/\/raw.githubusercontent.com\/unicode-org\/cldr-json\/refs\/tags\/48.2.0\/cldr-json\/cldr-annotations-full\/annotations\/zh\/annotations.json"
+    },
+    {
+      "name" : "emoji-sequences.txt",
+      "sha256" : "3fe3c77e72e8f26df302dc7d99b106c5d08fd808ef7246fb5d4502d659fe659c",
+      "url" : "https:\/\/unicode.org\/Public\/emoji\/16.0\/emoji-sequences.txt"
+    },
+    {
+      "name" : "emoji-test.txt",
+      "sha256" : "24f0c534e86cf142e2496953e8f0e46a3e702392911eddcd29c6cced85139697",
+      "url" : "https:\/\/unicode.org\/Public\/emoji\/16.0\/emoji-test.txt"
+    },
+    {
+      "name" : "emoji-zwj-sequences.txt",
+      "sha256" : "9423ec235474356f970a696506737e2d5d65453a67f45df66b8bbe920c3fab83",
+      "url" : "https:\/\/unicode.org\/Public\/emoji\/16.0\/emoji-zwj-sequences.txt"
+    }
+  ],
+  "unicodeEmojiVersion" : "16.0"
+}
