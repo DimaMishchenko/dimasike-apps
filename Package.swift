@@ -30,11 +30,10 @@ let package = Package(
     .package(url: "https://github.com/apple/swift-crypto.git", from: "4.3.1")
   ],
   targets: [
-    .target(
-      name: "DesignSystem",
-      swiftSettings: [
-        .defaultIsolation(MainActor.self)
-      ]
+    .target(name: "DesignSystem"),
+    .testTarget(
+      name: "DesignSystemTests",
+      dependencies: ["DesignSystem"]
     ),
     .target(
       name: "Emojis",
@@ -47,13 +46,6 @@ let package = Package(
       dependencies: [
         .product(name: "ArgumentParser", package: "swift-argument-parser"),
         .product(name: "Crypto", package: "swift-crypto")
-      ]
-    ),
-    .testTarget(
-      name: "DesignSystemTests",
-      dependencies: ["DesignSystem"],
-      swiftSettings: [
-        .defaultIsolation(MainActor.self)
       ]
     ),
     .testTarget(

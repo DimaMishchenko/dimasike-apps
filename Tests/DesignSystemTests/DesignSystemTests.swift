@@ -2,6 +2,6 @@ import Testing
 
 @testable import DesignSystem
 
-@Test func designSystemModuleLoads() {
-  _ = DesignSystem.self
+@Test func designSystemPlaceholder() {
+  _ = Colors.shared
 }
