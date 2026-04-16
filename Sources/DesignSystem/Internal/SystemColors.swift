@@ -9,9 +9,9 @@ import SwiftUI
 extension Color {
   static var dsSystemBackground: Self {
     #if os(watchOS)
-      .black
+      dsDarkSystemBackground
     #elseif os(tvOS)
-      .black
+      dsDarkSystemBackground
     #elseif canImport(UIKit)
       Color(uiColor: .systemBackground)
     #elseif canImport(AppKit)
@@ -23,9 +23,9 @@ extension Color {
 
   static var dsSecondarySystemBackground: Self {
     #if os(watchOS)
-      .white.opacity(0.08)
+      dsDarkSecondarySystemBackground
     #elseif os(tvOS)
-      .white.opacity(0.08)
+      dsDarkSecondarySystemBackground
     #elseif canImport(UIKit)
       Color(uiColor: .secondarySystemBackground)
     #elseif canImport(AppKit)
@@ -37,9 +37,9 @@ extension Color {
 
   static var dsTertiarySystemBackground: Self {
     #if os(watchOS)
-      .white.opacity(0.12)
+      dsDarkTertiarySystemBackground
     #elseif os(tvOS)
-      .white.opacity(0.12)
+      dsDarkTertiarySystemBackground
     #elseif canImport(UIKit)
       Color(uiColor: .tertiarySystemBackground)
     #elseif canImport(AppKit)
@@ -51,7 +51,7 @@ extension Color {
 
   static var dsSeparator: Self {
     #if os(watchOS)
-      .white.opacity(0.16)
+      dsDarkSeparator
     #elseif canImport(UIKit)
       Color(uiColor: .separator)
     #elseif canImport(AppKit)
@@ -63,7 +63,7 @@ extension Color {
 
   static var dsPrimaryText: Self {
     #if os(watchOS)
-      .primary
+      dsDarkPrimaryText
     #elseif canImport(UIKit)
       Color(uiColor: .label)
     #elseif canImport(AppKit)
@@ -75,7 +75,7 @@ extension Color {
 
   static var dsSecondaryText: Self {
     #if os(watchOS)
-      .secondary
+      dsDarkSecondaryText
     #elseif canImport(UIKit)
       Color(uiColor: .secondaryLabel)
     #elseif canImport(AppKit)
@@ -87,7 +87,7 @@ extension Color {
 
   static var dsTertiaryText: Self {
     #if os(watchOS)
-      .secondary.opacity(0.7)
+      dsDarkTertiaryText
     #elseif canImport(UIKit)
       Color(uiColor: .tertiaryLabel)
     #elseif canImport(AppKit)
@@ -99,7 +99,7 @@ extension Color {
 
   static var dsLink: Self {
     #if os(watchOS)
-      .accentColor
+      dsDarkLink
     #elseif canImport(UIKit)
       Color(uiColor: .link)
     #elseif canImport(AppKit)
@@ -111,7 +111,7 @@ extension Color {
 
   static var dsDisabled: Self {
     #if os(watchOS)
-      .secondary.opacity(0.5)
+      dsDarkDisabled
     #elseif canImport(UIKit)
       Color(uiColor: .quaternaryLabel)
     #elseif canImport(AppKit)
@@ -123,7 +123,7 @@ extension Color {
 
   static var dsPlaceholder: Self {
     #if os(watchOS)
-      .secondary.opacity(0.7)
+      dsDarkPlaceholder
     #elseif canImport(UIKit)
       Color(uiColor: .placeholderText)
     #elseif canImport(AppKit)
@@ -198,6 +198,71 @@ extension Color {
       return (1, 1, 1)
     #endif
   }
+
+  private static let dsDarkSystemBackground = Color(
+    red: 0,
+    green: 0,
+    blue: 0
+  )
+
+  private static let dsDarkSecondarySystemBackground = Color(
+    red: 28 / 255,
+    green: 28 / 255,
+    blue: 30 / 255
+  )
+
+  private static let dsDarkTertiarySystemBackground = Color(
+    red: 44 / 255,
+    green: 44 / 255,
+    blue: 46 / 255
+  )
+
+  private static let dsDarkSeparator = Color(
+    red: 84 / 255,
+    green: 84 / 255,
+    blue: 88 / 255,
+    opacity: 0.65
+  )
+
+  private static let dsDarkPrimaryText = Color(
+    red: 1,
+    green: 1,
+    blue: 1
+  )
+
+  private static let dsDarkSecondaryText = Color(
+    red: 235 / 255,
+    green: 235 / 255,
+    blue: 245 / 255,
+    opacity: 0.6
+  )
+
+  private static let dsDarkTertiaryText = Color(
+    red: 235 / 255,
+    green: 235 / 255,
+    blue: 245 / 255,
+    opacity: 0.3
+  )
+
+  private static let dsDarkLink = Color(
+    red: 9 / 255,
+    green: 132 / 255,
+    blue: 255 / 255
+  )
+
+  private static let dsDarkDisabled = Color(
+    red: 235 / 255,
+    green: 235 / 255,
+    blue: 245 / 255,
+    opacity: 0.18
+  )
+
+  private static let dsDarkPlaceholder = Color(
+    red: 235 / 255,
+    green: 235 / 255,
+    blue: 245 / 255,
+    opacity: 0.3
+  )
 }
 
 #if canImport(UIKit)
