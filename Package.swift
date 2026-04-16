@@ -17,12 +17,16 @@ let package = Package(
       targets: ["DesignSystem"]
     ),
     .library(
+      name: "EmojiKit",
+      targets: ["EmojiKit"]
+    ),
+    .library(
       name: "Emojis",
       targets: ["Emojis"]
     ),
     .executable(
       name: "emoji",
-      targets: ["EmojiKit"]
+      targets: ["emoji"]
     )
   ],
   dependencies: [
@@ -41,12 +45,16 @@ let package = Package(
         .process("Resources")
       ]
     ),
-    .executableTarget(
+    .target(
       name: "EmojiKit",
       dependencies: [
         .product(name: "ArgumentParser", package: "swift-argument-parser"),
         .product(name: "Crypto", package: "swift-crypto")
       ]
+    ),
+    .executableTarget(
+      name: "emoji",
+      dependencies: ["EmojiKit"]
     ),
     .testTarget(
       name: "EmojisTests",

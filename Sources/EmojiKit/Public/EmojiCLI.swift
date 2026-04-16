@@ -1,13 +1,20 @@
 import ArgumentParser
 import Foundation
 
-@main
 struct EmojiCLI: AsyncParsableCommand {
   static let configuration = CommandConfiguration(
     commandName: "emoji",
     abstract: "Fetches and generates bundled emoji resources.",
     subcommands: [FetchCommand.self, LocalesCommand.self]
   )
+}
+
+/// Public entrypoint for the emoji command-line interface.
+public enum EmojiKitCLI {
+  /// Runs the emoji command-line interface.
+  public static func main() async {
+    await EmojiCLI.main()
+  }
 }
 
 struct FetchCommand: AsyncParsableCommand {

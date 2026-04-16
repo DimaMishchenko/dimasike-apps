@@ -3,167 +3,172 @@ import Testing
 
 @testable import Emojis
 
-@Test func metadataDecodesFromFixtureResources() throws {
-  let metadata = try testCatalog().metadata()
+@Suite struct EmojisTests {
+  @Test func metadataDecodesFromFixtureResources() throws {
+    let metadata = try testCatalog().metadata()
 
-  #expect(metadata.schemaVersion == 2)
-  #expect(metadata.defaultLocaleIdentifier == "en")
-  #expect(metadata.availableLocaleIdentifiers == ["cs", "de", "en"])
-}
-
-@Test func fetchResolvesLanguageFallback() throws {
-  let catalog = try testCatalog()
-
-  let emojis = try catalog.fetch(locale: Locale(identifier: "de-AT"), filter: .none)
-
-  #expect(emojis.count == 4)
-  #expect(emojis.first?.localization.localeIdentifier == "de")
-  #expect(emojis.first?.localization.name == "grinsendes gesicht")
-}
-
-@Test func fetchResolvesEnglishRegionalVariantToBundledEnglish() throws {
-  let catalog = try testCatalog()
-
-  let emojis = try catalog.fetch(locale: Locale(identifier: "en-GB"), filter: .none)
-
-  #expect(emojis.first?.localization.localeIdentifier == "en")
-  #expect(emojis.first?.localization.name == "grinning face")
-}
-
-@Test func explicitUnsupportedLocaleThrows() throws {
-  let catalog = try testCatalog()
-
-  #expect(throws: EmojisError.unsupportedLocale(requested: "fr-FR", available: ["cs", "de", "en"]))
-  {
-    try catalog.fetch(locale: Locale(identifier: "fr-FR"), filter: .none)
+    #expect(metadata.schemaVersion == 2)
+    #expect(metadata.defaultLocaleIdentifier == "en")
+    #expect(metadata.availableLocaleIdentifiers == ["cs", "de", "en"])
   }
-}
 
-@Test func unsupportedSystemLocaleFallsBackToDefaultLocale() throws {
-  let catalog = try testCatalog(systemLocale: Locale(identifier: "fr-FR"))
+  @Test func fetchResolvesLanguageFallback() throws {
+    let catalog = try testCatalog()
 
-  let emojis = try catalog.fetch(locale: nil, filter: .none)
+    let emojis = try catalog.fetch(locale: Locale(identifier: "de-AT"), filter: .none)
 
-  #expect(emojis.first?.localization.localeIdentifier == "en")
-}
+    #expect(emojis.count == 4)
+    #expect(emojis.first?.localization.localeIdentifier == "de")
+    #expect(emojis.first?.localization.name == "grinsendes gesicht")
+  }
 
-@Test func missingLocalizationEntryThrows() throws {
-  let encoder = JSONEncoder()
-  encoder.dateEncodingStrategy = .iso8601
+  @Test func fetchResolvesEnglishRegionalVariantToBundledEnglish() throws {
+    let catalog = try testCatalog()
 
-  let metadata = Metadata(
-    schemaVersion: 2,
-    unicodeEmojiVersion: "17.0",
-    cldrVersion: "47",
-    generatedAt: Date(timeIntervalSince1970: 0),
-    defaultLocaleIdentifier: "en",
-    availableLocaleIdentifiers: ["en"],
-    sourceFiles: []
-  )
-  let emojis = [
-    BundledEmojiRecord(
-      id: "1F600",
-      value: "😀",
-      group: "Smileys & Emotion",
-      subgroup: "face-smiling",
-      unicodeVersion: "6.1",
-      sortOrder: 1,
-      skinToneSupport: .none,
-      skinToneVariants: []
+    let emojis = try catalog.fetch(locale: Locale(identifier: "en-GB"), filter: .none)
+
+    #expect(emojis.first?.localization.localeIdentifier == "en")
+    #expect(emojis.first?.localization.name == "grinning face")
+  }
+
+  @Test func explicitUnsupportedLocaleThrows() throws {
+    let catalog = try testCatalog()
+
+    #expect(
+      throws: EmojisError.unsupportedLocale(requested: "fr-FR", available: ["cs", "de", "en"])
+    ) {
+      try catalog.fetch(locale: Locale(identifier: "fr-FR"), filter: .none)
+    }
+  }
+
+  @Test func unsupportedSystemLocaleFallsBackToDefaultLocale() throws {
+    let catalog = try testCatalog(systemLocale: Locale(identifier: "fr-FR"))
+
+    let emojis = try catalog.fetch(locale: nil, filter: .none)
+
+    #expect(emojis.first?.localization.localeIdentifier == "en")
+  }
+
+  @Test func missingLocalizationEntryThrows() throws {
+    let encoder = JSONEncoder()
+    encoder.dateEncodingStrategy = .iso8601
+
+    let metadata = Metadata(
+      schemaVersion: 2,
+      unicodeEmojiVersion: "17.0",
+      cldrVersion: "47",
+      generatedAt: Date(timeIntervalSince1970: 0),
+      defaultLocaleIdentifier: "en",
+      availableLocaleIdentifiers: ["en"],
+      sourceFiles: []
     )
-  ]
-  let resources: [String: Data] = [
-    "metadata.json": try encoder.encode(metadata),
-    "emojis.json": try JSONEncoder().encode(emojis),
-    "localizations/index.json": try JSONEncoder()
-      .encode(
-        BundledLocalizationIndex(defaultLocaleIdentifier: "en", availableLocaleIdentifiers: ["en"])
-      ),
-    "localizations/en.json": try JSONEncoder()
-      .encode(
-        BundledLocalizationFile(localeIdentifier: "en", entries: [:])
+    let emojis = [
+      BundledEmojiRecord(
+        id: "1F600",
+        value: "😀",
+        group: "Smileys & Emotion",
+        subgroup: "face-smiling",
+        unicodeVersion: "6.1",
+        sortOrder: 1,
+        skinToneSupport: .none,
+        skinToneVariants: []
       )
-  ]
-  let catalog = EmojiCatalog(loader: InMemoryResourceLoader(resources: resources))
+    ]
+    let resources: [String: Data] = [
+      "metadata.json": try encoder.encode(metadata),
+      "emojis.json": try JSONEncoder().encode(emojis),
+      "localizations/index.json": try JSONEncoder()
+        .encode(
+          BundledLocalizationIndex(
+            defaultLocaleIdentifier: "en", availableLocaleIdentifiers: ["en"])
+        ),
+      "localizations/en.json": try JSONEncoder()
+        .encode(
+          BundledLocalizationFile(localeIdentifier: "en", entries: [:])
+        )
+    ]
+    let catalog = EmojiCatalog(loader: InMemoryResourceLoader(resources: resources))
 
-  #expect(throws: EmojisError.missingLocalization(locale: "en", emojiID: "1F600")) {
-    try catalog.fetch(locale: Locale(identifier: "en"), filter: .none)
+    #expect(throws: EmojisError.missingLocalization(locale: "en", emojiID: "1F600")) {
+      try catalog.fetch(locale: Locale(identifier: "en"), filter: .none)
+    }
   }
-}
 
-@Test func customFilterRunsAfterLocalization() throws {
-  let catalog = try testCatalog()
+  @Test func customFilterRunsAfterLocalization() throws {
+    let catalog = try testCatalog()
 
-  let emojis = try catalog.fetch(
-    locale: Locale(identifier: "cs"),
-    filter: .custom { $0.localization.name.contains("hvězda") }
-  )
+    let emojis = try catalog.fetch(
+      locale: Locale(identifier: "cs"),
+      filter: .custom { $0.localization.name.contains("hvězda") }
+    )
 
-  #expect(emojis.count == 1)
-  #expect(emojis.first?.value == "⭐")
-}
+    #expect(emojis.count == 1)
+    #expect(emojis.first?.value == "⭐")
+  }
 
-@Test func fetchCollapsesSkinToneVariantsIntoLogicalEmoji() throws {
-  let catalog = try testCatalog()
+  @Test func fetchCollapsesSkinToneVariantsIntoLogicalEmoji() throws {
+    let catalog = try testCatalog()
 
-  let emojis = try catalog.fetch(locale: Locale(identifier: "en"), filter: .none)
-  let thumbsUp = try #require(emojis.first(where: { $0.id.rawValue == "1F44D" }))
-  let handshake = try #require(emojis.first(where: { $0.id.rawValue == "1F91D" }))
+    let emojis = try catalog.fetch(locale: Locale(identifier: "en"), filter: .none)
+    let thumbsUp = try #require(emojis.first(where: { $0.id.rawValue == "1F44D" }))
+    let handshake = try #require(emojis.first(where: { $0.id.rawValue == "1F91D" }))
 
-  #expect(thumbsUp.skinToneSupport == .single)
-  #expect(thumbsUp.skinToneVariants.map(\.tones) == [[.light], [.dark]])
-  #expect(handshake.skinToneSupport == .multiple)
-  #expect(handshake.skinToneVariants.map(\.tones) == [[.light, .light], [.medium, .dark]])
-}
+    #expect(thumbsUp.skinToneSupport == .single)
+    #expect(thumbsUp.skinToneVariants.map(\.tones) == [[.light], [.dark]])
+    #expect(handshake.skinToneSupport == .multiple)
+    #expect(handshake.skinToneVariants.map(\.tones) == [[.light, .light], [.medium, .dark]])
+  }
 
-@Test func searchIndexLoadsAllLocalizations() throws {
-  let catalog = try testCatalog()
+  @Test func searchIndexLoadsAllLocalizations() throws {
+    let catalog = try testCatalog()
 
-  let index = try catalog.searchIndex(locales: .all)
+    let index = try catalog.searchIndex(locales: .all)
 
-  #expect(index.availableLocaleIdentifiers == ["cs", "de", "en"])
-  #expect(index.entries.count == 4)
-  #expect(index.entries.first?.localizations.map(\.localeIdentifier) == ["cs", "de", "en"])
-}
+    #expect(index.availableLocaleIdentifiers == ["cs", "de", "en"])
+    #expect(index.entries.count == 4)
+    #expect(index.entries.first?.localizations.map(\.localeIdentifier) == ["cs", "de", "en"])
+  }
 
-@Test func searchIndexResolvesExplicitLocalesAndDeduplicatesMatches() throws {
-  let catalog = try testCatalog()
+  @Test func searchIndexResolvesExplicitLocalesAndDeduplicatesMatches() throws {
+    let catalog = try testCatalog()
 
-  let index = try catalog.searchIndex(
-    locales: .explicit([
-      Locale(identifier: "en-GB"),
-      Locale(identifier: "en"),
-      Locale(identifier: "de-AT")
-    ])
-  )
+    let index = try catalog.searchIndex(
+      locales: .explicit([
+        Locale(identifier: "en-GB"),
+        Locale(identifier: "en"),
+        Locale(identifier: "de-AT")
+      ])
+    )
 
-  #expect(index.availableLocaleIdentifiers == ["en", "de"])
-  #expect(index.entries.first?.localizations.map(\.localeIdentifier) == ["en", "de"])
-}
+    #expect(index.availableLocaleIdentifiers == ["en", "de"])
+    #expect(index.entries.first?.localizations.map(\.localeIdentifier) == ["en", "de"])
+  }
 
-@Test func searchIndexCarriesSkinToneVariantsOnLogicalEntries() throws {
-  let catalog = try testCatalog()
+  @Test func searchIndexCarriesSkinToneVariantsOnLogicalEntries() throws {
+    let catalog = try testCatalog()
 
-  let index = try catalog.searchIndex(locales: .all)
-  let thumbsUp = try #require(index.entries.first(where: { $0.id.rawValue == "1F44D" }))
-  let handshake = try #require(index.entries.first(where: { $0.id.rawValue == "1F91D" }))
+    let index = try catalog.searchIndex(locales: .all)
+    let thumbsUp = try #require(index.entries.first(where: { $0.id.rawValue == "1F44D" }))
+    let handshake = try #require(index.entries.first(where: { $0.id.rawValue == "1F91D" }))
 
-  #expect(thumbsUp.skinToneSupport == .single)
-  #expect(thumbsUp.skinToneVariants.map(\.tones) == [[.light], [.dark]])
-  #expect(handshake.skinToneSupport == .multiple)
-  #expect(handshake.skinToneVariants.map(\.tones) == [[.light, .light], [.medium, .dark]])
-}
+    #expect(thumbsUp.skinToneSupport == .single)
+    #expect(thumbsUp.skinToneVariants.map(\.tones) == [[.light], [.dark]])
+    #expect(handshake.skinToneSupport == .multiple)
+    #expect(handshake.skinToneVariants.map(\.tones) == [[.light, .light], [.medium, .dark]])
+  }
 
-@Test func knownGroupsAndUnknownGroupsRoundTrip() throws {
-  let known = try JSONDecoder().decode(Emoji.Group.self, from: Data(#""Smileys & Emotion""#.utf8))
-  let unknown = try JSONDecoder().decode(Emoji.Group.self, from: Data(#""Custom Group""#.utf8))
-  let subgroup = try JSONDecoder().decode(Emoji.Subgroup.self, from: Data(#""face-smiling""#.utf8))
-  let tone = try JSONDecoder().decode(Emoji.SkinTone.self, from: Data(#""mediumDark""#.utf8))
+  @Test func knownGroupsAndUnknownGroupsRoundTrip() throws {
+    let known = try JSONDecoder().decode(Emoji.Group.self, from: Data(#""Smileys & Emotion""#.utf8))
+    let unknown = try JSONDecoder().decode(Emoji.Group.self, from: Data(#""Custom Group""#.utf8))
+    let subgroup = try JSONDecoder()
+      .decode(Emoji.Subgroup.self, from: Data(#""face-smiling""#.utf8))
+    let tone = try JSONDecoder().decode(Emoji.SkinTone.self, from: Data(#""mediumDark""#.utf8))
 
-  #expect(known == .smileysEmotion)
-  #expect(unknown.rawValue == "Custom Group")
-  #expect(subgroup.rawValue == "face-smiling")
-  #expect(tone == .mediumDark)
+    #expect(known == .smileysEmotion)
+    #expect(unknown.rawValue == "Custom Group")
+    #expect(subgroup.rawValue == "face-smiling")
+    #expect(tone == .mediumDark)
+  }
 }
 
 private func testCatalog(systemLocale: Locale = Locale(identifier: "en")) throws -> EmojiCatalog {
