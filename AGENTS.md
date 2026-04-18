@@ -20,12 +20,12 @@ Repository structure:
 
 Use the `swift` CLI for SwiftPM package workflows at the repository root, including `swift build`, `swift test`, and other package-oriented commands.
 
-Use `XcodeBuildMCP` by default for Xcode, Tuist workspace, simulator, device, and other Apple-platform app workflows in this repository.
+Use the `xcodebuildmcp` CLI by default for Xcode, Tuist workspace, simulator, device, and other Apple-platform app workflows in this repository.
 
-Fallback order for `XcodeBuildMCP`-driven workflows when MCP is unavailable:
+Fallback order for `xcodebuildmcp`-driven workflows:
 
-- Try the `xcodebuildmcp` CLI.
-- Otherwise, fall back to `xcodebuild`.
+- Fall back to `xcodebuild` when the `xcodebuildmcp` CLI is unavailable or insufficient.
+- When using `xcodebuild` directly, pipe output through `xcbeautify`.
 
 ## Specs And Contracts
 

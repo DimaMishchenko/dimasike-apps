@@ -15,8 +15,5 @@ enabledWorkflows:
   - xcode-ide
 sessionDefaults:
   workspacePath: ./dimasike-apps.xcworkspace
-  simulatorName: iPhone 17 Pro
-  useLatestOS: true
   derivedDataPath: ./DerivedData
   preferXcodebuild: true
-  platform: iOS Simulator
