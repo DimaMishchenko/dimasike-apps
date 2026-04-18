@@ -18,12 +18,13 @@ Repository structure:
 - Tuist generates the workspace/projects used for app builds and runs. If app files or Tuist manifests change, regenerate with:
   `tuist generate --no-open`
 
-Use `XcodeBuildMCP` by default for build, test, simulator, device, and related Apple-platform workflows in this repository, regardless of project type.
+Use the `swift` CLI for SwiftPM package workflows at the repository root, including `swift build`, `swift test`, and other package-oriented commands.
 
-Fallback order when `XcodeBuildMCP` is unavailable:
+Use `XcodeBuildMCP` by default for Xcode, Tuist workspace, simulator, device, and other Apple-platform app workflows in this repository.
+
+Fallback order for `XcodeBuildMCP`-driven workflows when MCP is unavailable:
 
 - Try the `xcodebuildmcp` CLI.
-- If the task is SwiftPM-only, fall back to `swift build` / `swift test`.
 - Otherwise, fall back to `xcodebuild`.
 
 ## Specs And Contracts
