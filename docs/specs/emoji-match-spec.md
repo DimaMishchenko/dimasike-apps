@@ -165,6 +165,193 @@ These are useful, but not the defining behavior of v1.
 5. The app produces an emoji-enriched version of the selected text and inserts it back only after
    explicit confirmation.
 
+## Supported Flows
+
+This section lists the flows the product should intentionally support, even while some details are
+still open.
+
+### Primary Flows
+
+#### Flow 1: Open launcher
+
+1. User triggers the global shortcut with no selected text.
+2. Launcher appears and focuses the search field.
+3. If the query is empty, the launcher may show recents, most used, or another lightweight default
+   state.
+4. User can begin typing immediately.
+
+#### Flow 2: Search and insert
+
+1. User types a query such as `flower`, `sparkle`, or `emoji for a section header`.
+2. Local search results appear immediately while typing when relevant matches exist.
+3. AI-enhanced results may appear later as a secondary layer when helpful.
+4. User can confirm a result without waiting for AI if the direct result is already good enough.
+5. Confirming inserts the chosen emoji into the current app and closes the launcher.
+
+Notes:
+- direct and natural-language queries are not separate product flows; both use the same search UI
+- natural-language queries may sometimes show mostly AI-driven results
+
+#### Flow 3: Selected-text prefill
+
+1. User selects text in another app.
+2. User triggers the global shortcut.
+3. The selected text becomes the initial query when available.
+4. Results appear for that query.
+5. User selects an emoji to insert.
+
+#### Flow 4: Recents and most used
+
+1. User opens the launcher with an empty query.
+2. Launcher may show recent selections and frequently used emoji.
+3. User can choose one directly without typing.
+4. Once typing starts, search results become the primary view.
+
+#### Flow 5: Full catalog browsing
+
+1. User opens the launcher.
+2. User enters an explicit browse mode to see the emoji catalog.
+3. User browses by category, grouping, or search within the catalog.
+4. User selects an emoji and inserts it into the current app.
+
+### Result States
+
+These are states within the main search flow, not separate top-level flows.
+
+- `AI loading`
+  - direct results may already be visible
+  - AI results are still loading
+  - launcher may show a lightweight placeholder for the AI section
+
+- `Expanded results`
+  - compact view may show only a subset of results
+  - user can explicitly expand to inspect more results
+  - this can apply to direct results, AI results, or both
+
+- `No results`
+  - query returns no useful local match
+  - AI may still be loading, unavailable, or also fail to produce a useful suggestion
+  - launcher presents a clear no-results state with practical fallback actions
+
+### Keyboard And Dismissal
+
+#### Flow 6: Keyboard-only operation
+
+1. User opens the launcher without using the mouse.
+2. User types, navigates results, expands secondary result areas if needed, and confirms a choice.
+3. The full primary flow can be completed entirely by keyboard.
+
+Exact keyboard shortcuts remain an open design decision and should be specified later.
+
+#### Flow 7: Dismiss without side effects
+
+1. User opens the launcher.
+2. User decides not to insert anything.
+3. User dismisses the launcher.
+4. No text is inserted and the prior app remains in focus or regains focus appropriately.
+
+### System And Failure Cases
+
+These are support cases around the main flows.
+
+- `Accessibility permission missing`
+  - selected-text retrieval or insertion needs Accessibility support
+  - required permission is missing
+  - app explains degraded behavior and guides the user if needed
+  - core search should remain usable when possible
+
+- `Selected text unavailable`
+  - user expects selected-text prefill
+  - current app does not expose selected text, or access fails
+  - launcher opens with an empty query instead of failing
+
+- `AI unavailable`
+  - Foundation Models are unsupported, disabled, unavailable, or time out
+  - launcher continues to operate using deterministic local search only
+
+- `Insertion or paste failure`
+  - user confirms an emoji
+  - insertion into the current app fails or is unreliable in that context
+  - app handles the failure gracefully
+
+Exact fallback behavior remains open.
+
+### Settings And App Management Flows
+
+#### Flow 8: Settings
+
+1. User opens settings.
+2. User updates app preferences.
+3. Changes take effect immediately or with clearly defined behavior.
+
+The exact settings list remains open, but likely includes:
+
+- global shortcut customization
+- launch behavior such as launch on login
+- permissions guidance and status
+- optional search or AI preferences
+- optional insertion behavior preferences
+
+#### Flow 9: First run
+
+1. User launches Emoji Match for the first time.
+2. App explains the core shortcut-driven model briefly.
+3. App may surface any important permission or setup steps.
+
+Exact onboarding depth remains open.
+
+#### Flow 10: Reopening while already running
+
+1. Emoji Match is already running in the background.
+2. User triggers the shortcut again.
+3. Launcher opens or toggles predictably.
+
+Exact toggle behavior remains open.
+
+## Open Questions
+
+The following items are intentionally left undecided for now and should be filled in later as the
+product and UI mature.
+
+### Interaction Decisions
+
+- default global shortcut
+- result navigation shortcuts
+- shortcut for opening the full catalog
+- shortcut for expanding secondary result sections
+- dismissal behavior when the launcher is already open
+
+### Layout And Presentation Decisions
+
+- exact launcher size and placement
+- exact organization of direct results vs AI results
+- how many results are visible before expansion
+- exact empty-state presentation
+- exact recents and most-used layout
+- exact catalog layout and grouping
+- exact settings layout
+
+### Settings Decisions
+
+- final settings list for v1
+- whether to expose launch-on-login in v1
+- whether to expose AI-specific settings in v1
+- whether to expose insertion-mode preferences in v1
+
+### Failure-Handling Decisions
+
+- exact paste fallback behavior
+- exact no-results fallback actions
+- exact messaging when Accessibility permission is missing
+- exact messaging when AI is unavailable
+- exact behavior when selected text is very long or multiline
+
+### Scope Decisions
+
+- whether `Emojify` ships in v1 or later
+- whether copy actions ship in v1 or later
+- whether clipboard preservation is part of v1
+
 ## Search Model
 
 The search stack should be hybrid.
