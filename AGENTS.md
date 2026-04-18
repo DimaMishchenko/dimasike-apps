@@ -4,9 +4,9 @@ Use built-in `swift-format` as the source of truth for code style and linting.
 
 - Configuration file: `.swift-format` at repository root.
 - Run lint on code changes:
-  `swift format lint ./ -r -p`
+  `swift format lint Sources Tests apps -r -p`
 - Auto-format where possible:
-  `swift format ./ -r -p -i`
+  `swift format Sources Tests apps -r -p -i`
 - Fix all the reported issues.
 
 ## Tooling
@@ -21,6 +21,8 @@ Repository structure:
 Use the `swift` CLI for SwiftPM package workflows at the repository root, including `swift build`, `swift test`, and other package-oriented commands.
 
 Use the `xcodebuildmcp` CLI by default for Xcode, Tuist workspace, simulator, device, and other Apple-platform app workflows in this repository.
+
+- Before falling back from `xcodebuildmcp`, verify that the needed workflow is unavailable or insufficient in the installed CLI, not just absent from the currently exposed agent tool surface.
 
 Fallback order for `xcodebuildmcp`-driven workflows:
 
