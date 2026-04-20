@@ -14,6 +14,8 @@ Use built-in `swift-format` as the source of truth for code style and linting.
 Repository structure:
 
 - The root package is SwiftPM-based and is the source of truth for shared packages and tests.
+- Only put reusable cross-app modules in `Package.swift`. App-specific modules and tests must live
+  under `apps/` and be modeled with Tuist/local targets instead of SwiftPM targets.
 - App code lives under `apps/` and is managed through Tuist manifests.
 - Tuist generates the workspace/projects used for app builds and runs. If app files or Tuist manifests change, regenerate with:
   `tuist generate --no-open`

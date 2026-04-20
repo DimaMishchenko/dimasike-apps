@@ -1,5 +1,13 @@
 import ProjectDescription
 
+let appTargetSettings = Settings.settings(
+  base: [
+    "SWIFT_APPROACHABLE_CONCURRENCY": "YES",
+    "SWIFT_DEFAULT_ACTOR_ISOLATION": "MainActor",
+    "STRING_CATALOG_GENERATE_SYMBOLS": "YES"
+  ]
+)
+
 let project = Project(
   name: "EmojiMatch",
   organizationName: "dimasike",
@@ -19,8 +27,13 @@ let project = Project(
         ]
       ),
       buildableFolders: [
-        "AppSources"
-      ]
+        "AppSources",
+        "Resources"
+      ],
+      dependencies: [
+        .package(product: "DesignSystem")
+      ],
+      settings: appTargetSettings
     )
   ]
 )
