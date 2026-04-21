@@ -242,6 +242,7 @@ These are states within the main search flow, not separate top-level flows.
 3. The full primary flow can be completed entirely by keyboard.
 
 Exact keyboard shortcuts remain an open design decision and should be specified later.
+Current implementation uses `Shift-Command-E` as the temporary default launcher shortcut.
 
 #### Flow 7: Dismiss without side effects
 

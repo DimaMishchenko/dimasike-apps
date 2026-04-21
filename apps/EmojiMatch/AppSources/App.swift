@@ -1,15 +1,22 @@
+import AppKit
 import SwiftUI
 
 @main
 struct App: SwiftUI.App {
-  private let launcherSize = CGSize(width: 360, height: 24)
+  private enum Constants {
+    static let launcherSceneID = "launcher"
+    static let launcherSize = CGSize(width: 360, height: 24)
+  }
+
+  @State private var settings = AppSettings()
+  private let systemShortcutMonitor = SystemShortcutMonitor()
 
   @Environment(\.openWindow) private var openWindow
 
   var body: some Scene {
-    MenuBarExtra("Emoji Match", systemImage: "face.smiling") {
+    MenuBarExtra {
       Button(String(localized: .menuOpen)) {
-        openWindow(id: "launcher")
+        openLauncher()
       }
 
       Divider()
@@ -18,16 +25,31 @@ struct App: SwiftUI.App {
         NSApp.terminate(nil)
       }
       .keyboardShortcut("q")
+    } label: {
+      Label("Emoji Match", systemImage: "face.smiling")
+        .task {
+          systemShortcutMonitor.start {
+            openLauncher()
+          }
+        }
+        .onChange(of: settings.launcherShortcut, initial: true) { _, shortcut in
+          systemShortcutMonitor.shortcut = shortcut
+        }
     }
     .menuBarExtraStyle(.menu)
 
-    WindowGroup(id: "launcher") {
+    WindowGroup(id: Constants.launcherSceneID) {
       ContentView()
         .hideWindowButtons()
-        .frame(width: launcherSize.width, height: launcherSize.height)
+        .frame(width: Constants.launcherSize.width, height: Constants.launcherSize.height)
     }
-    .defaultSize(width: launcherSize.width, height: launcherSize.height)
+    .defaultSize(width: Constants.launcherSize.width, height: Constants.launcherSize.height)
     .windowResizability(.contentSize)
     .windowStyle(.hiddenTitleBar)
+  }
+
+  private func openLauncher() {
+    NSApp.activate(ignoringOtherApps: true)
+    openWindow(id: Constants.launcherSceneID)
   }
 }
