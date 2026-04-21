@@ -2,31 +2,39 @@ import DesignSystem
 import SwiftUI
 
 struct ContentView: View {
-  @Environment(\.dismiss) private var dismiss
+  let onSubmit: () -> Void
   @State private var query = ""
-  @FocusState private var isSearchFocused: Bool
   private let colors = Color.ds
 
   var body: some View {
     TextField(String(localized: .launcherSearchPlaceholder), text: $query)
       .textFieldStyle(.plain)
       .font(.ds.body)
-      .focused($isSearchFocused)
       .padding(.horizontal, .ds.spacing.sm)
+      .padding(.vertical, .ds.spacing.xs)
       .frame(maxWidth: .infinity, maxHeight: .infinity)
+      .background(
+        RoundedRectangle(cornerRadius: .ds.radius.md, style: .continuous)
+          .fill(colors.surface)
+          .overlay(
+            RoundedRectangle(cornerRadius: .ds.radius.md, style: .continuous)
+              .stroke(colors.separator, lineWidth: .ds.stroke.thin)
+          )
+      )
+      .padding(.horizontal, .ds.spacing.sm)
+      .padding(.vertical, .ds.spacing.xs)
       .onSubmit {
-        dismiss()
-      }
-      .onAppear {
-        isSearchFocused = true
+        onSubmit()
       }
       .ignoresSafeArea()
   }
 }
 
 #Preview {
-  ContentView()
-    .padding(.top, 1)
-    .frame(width: 360, height: 44)
-    .hideWindowButtons()
+  VStack {
+    Spacer()
+      .frame(height: 8)
+    ContentView(onSubmit: {})
+      .frame(width: 360, height: 44)
+  }
 }

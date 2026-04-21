@@ -4,14 +4,11 @@ import SwiftUI
 @main
 struct App: SwiftUI.App {
   private enum Constants {
-    static let launcherSceneID = "launcher"
-    static let launcherSize = CGSize(width: 360, height: 24)
+    static let launcherInitialSize = CGSize(width: 360, height: 44)
   }
 
   @State private var settings = AppSettings()
   private let systemShortcutMonitor = SystemShortcutMonitor()
-
-  @Environment(\.openWindow) private var openWindow
 
   var body: some Scene {
     MenuBarExtra {
@@ -37,19 +34,12 @@ struct App: SwiftUI.App {
         }
     }
     .menuBarExtraStyle(.menu)
-
-    WindowGroup(id: Constants.launcherSceneID) {
-      ContentView()
-        .hideWindowButtons()
-        .frame(width: Constants.launcherSize.width, height: Constants.launcherSize.height)
-    }
-    .defaultSize(width: Constants.launcherSize.width, height: Constants.launcherSize.height)
-    .windowResizability(.contentSize)
-    .windowStyle(.hiddenTitleBar)
   }
 
   private func openLauncher() {
-    NSApp.activate(ignoringOtherApps: true)
-    openWindow(id: Constants.launcherSceneID)
+    let panel = EmojiMatchPanel(initialSize: Constants.launcherInitialSize) { close in
+      ContentView(onSubmit: close)
+    }
+    panel.show()
   }
 }

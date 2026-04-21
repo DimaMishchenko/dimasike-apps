@@ -243,6 +243,9 @@ These are states within the main search flow, not separate top-level flows.
 
 Exact keyboard shortcuts remain an open design decision and should be specified later.
 Current implementation uses `Shift-Command-E` as the temporary default launcher shortcut.
+Current implementation uses a floating all-spaces launcher panel so it can appear above other apps,
+including fullscreen ones.
+Current implementation closes the launcher when the user clicks outside it.
 
 #### Flow 7: Dismiss without side effects
 
