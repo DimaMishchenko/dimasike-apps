@@ -242,10 +242,16 @@ These are states within the main search flow, not separate top-level flows.
 3. The full primary flow can be completed entirely by keyboard.
 
 Exact keyboard shortcuts remain an open design decision and should be specified later.
-Current implementation uses `Shift-Command-E` as the temporary default launcher shortcut.
+Current implementation uses `Control-Command-E` as the temporary default launcher shortcut.
 Current implementation uses a floating all-spaces launcher panel so it can appear above other apps,
 including fullscreen ones.
 Current implementation closes the launcher when the user clicks outside it.
+Current implementation anchors the launcher near the focused text caret when available; otherwise
+it falls back to editor-level heuristics and then to the current screen center.
+Current implementation requests Accessibility access from app code when caret-based positioning is
+first needed, while keeping the accessibility module itself limited to status and anchor utilities.
+Current implementation enables `AXManualAccessibility` on the frontmost app before reading the
+accessibility tree, to better support Electron and WebView wrappers.
 
 #### Flow 7: Dismiss without side effects
 

@@ -10,7 +10,7 @@ final class AppSettings {
 
     static let defaultLauncher = Shortcut(
       keyCode: UInt32(kVK_ANSI_E),
-      carbonModifiers: UInt32(cmdKey | shiftKey)
+      carbonModifiers: UInt32(cmdKey | controlKey)
     )
   }
 

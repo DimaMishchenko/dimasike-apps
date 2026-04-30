@@ -1,6 +1,8 @@
 import AppKit
 import SwiftUI
 
+private let emojiMatchPanelAnchorSpacing: CGFloat = 8
+
 final class EmojiMatchPanel<Content: View>: NSPanel {
   init(
     initialSize: CGSize,
@@ -30,8 +32,8 @@ final class EmojiMatchPanel<Content: View>: NSPanel {
     )
   }
 
-  func show() {
-    center(on: activeScreen())
+  func show(anchorRect: CGRect?) {
+    position(using: anchorRect)
     orderFrontRegardless()
     makeKeyAndOrderFront(nil)
     focusFirstTextField()
@@ -55,6 +57,63 @@ final class EmojiMatchPanel<Content: View>: NSPanel {
     )
 
     setFrame(CGRect(origin: origin, size: size), display: false)
+  }
+
+  private func position(using anchorRect: CGRect?) {
+    guard let anchorRect else {
+      center(on: activeScreen())
+      return
+    }
+
+    let screenRect = rectInScreenCoordinates(anchorRect)
+
+    guard let screen = screen(containing: screenRect)
+    else {
+      center(on: activeScreen())
+      return
+    }
+
+    let visibleFrame = screen.visibleFrame
+    let size = frame.size
+    let x = min(
+      max(screenRect.midX - (size.width / 2), visibleFrame.minX),
+      visibleFrame.maxX - size.width
+    )
+
+    let preferredAboveY = screenRect.maxY + emojiMatchPanelAnchorSpacing
+    let preferredBelowY = screenRect.minY - size.height - emojiMatchPanelAnchorSpacing
+    let y: CGFloat
+
+    if preferredAboveY + size.height <= visibleFrame.maxY {
+      y = preferredAboveY
+    } else if preferredBelowY >= visibleFrame.minY {
+      y = preferredBelowY
+    } else {
+      y = min(
+        max(preferredAboveY, visibleFrame.minY),
+        visibleFrame.maxY - size.height
+      )
+    }
+
+    setFrame(CGRect(x: x, y: y, width: size.width, height: size.height), display: false)
+  }
+
+  private func screen(containing rect: CGRect) -> NSScreen? {
+    NSScreen.screens.first { $0.frame.intersects(rect) }
+  }
+
+  private func rectInScreenCoordinates(_ rect: CGRect) -> CGRect {
+    let desktopFrame = NSScreen.screens.reduce(into: CGRect.null) { partialResult, screen in
+      partialResult = partialResult.union(screen.frame)
+    }
+
+    // Accessibility bounds use a top-left desktop origin; AppKit window placement uses bottom-left.
+    return CGRect(
+      x: rect.minX,
+      y: desktopFrame.maxY - rect.maxY,
+      width: rect.width,
+      height: rect.height
+    )
   }
 
   private func focusFirstTextField() {
