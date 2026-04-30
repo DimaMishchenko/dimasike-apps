@@ -252,6 +252,8 @@ Current implementation requests Accessibility access from app code when caret-ba
 first needed, while keeping the accessibility module itself limited to status and anchor utilities.
 Current implementation enables `AXManualAccessibility` on the frontmost app before reading the
 accessibility tree, to better support Electron and WebView wrappers.
+Current implementation pastes a random bundled emoji on Return as a temporary submit action and
+restores the previous clipboard contents shortly after the paste event.
 
 #### Flow 7: Dismiss without side effects
 

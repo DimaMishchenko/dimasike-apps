@@ -43,6 +43,7 @@ let project = Project(
       ],
       dependencies: [
         .package(product: "DesignSystem"),
+        .package(product: "Emojis"),
         .target(name: "AccessibilitySupport")
       ],
       settings: emojiMatchTargetSettings
