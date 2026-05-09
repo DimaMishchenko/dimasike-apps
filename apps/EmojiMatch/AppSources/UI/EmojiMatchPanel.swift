@@ -1,11 +1,6 @@
 import AppKit
+import DesignSystem
 import SwiftUI
-
-private enum EmojiMatchPanelChrome {
-  static let anchorSpacing: CGFloat = 8
-  static let contentPadding: CGFloat = 16
-  static let cornerRadius: CGFloat = 40
-}
 
 @MainActor
 final class EmojiMatchPanel<Content: View>: NSPanel {
@@ -86,8 +81,8 @@ final class EmojiMatchPanel<Content: View>: NSPanel {
       visibleFrame.maxX - size.width
     )
 
-    let preferredAboveY = screenRect.maxY + EmojiMatchPanelChrome.anchorSpacing
-    let preferredBelowY = screenRect.minY - size.height - EmojiMatchPanelChrome.anchorSpacing
+    let preferredAboveY = screenRect.maxY + CGFloat.ds.spacing.xs
+    let preferredBelowY = screenRect.minY - size.height - CGFloat.ds.spacing.xs
     let y: CGFloat
 
     if preferredAboveY + size.height <= visibleFrame.maxY {
@@ -142,8 +137,8 @@ final class EmojiMatchPanel<Content: View>: NSPanel {
 
   private static func defaultPanelSize(for contentSize: CGSize) -> CGSize {
     CGSize(
-      width: contentSize.width + (EmojiMatchPanelChrome.contentPadding * 2),
-      height: contentSize.height + (EmojiMatchPanelChrome.contentPadding * 2)
+      width: contentSize.width + (CGFloat.ds.spacing.xs * 2),
+      height: contentSize.height + (CGFloat.ds.spacing.xs * 2)
     )
   }
 
@@ -185,7 +180,7 @@ private struct EmojiMatchPanelSurface<Content: View>: View {
   var body: some View {
     content()
       .frame(width: contentWidth, alignment: .leading)
-      .padding(EmojiMatchPanelChrome.contentPadding)
+      .padding(.ds.spacing.xs)
       .background(panelBackground)
       .overlay(panelBorder)
       .fixedSize()
@@ -196,7 +191,7 @@ private struct EmojiMatchPanelSurface<Content: View>: View {
     EmojiMatchPanelMaterialView()
       .clipShape(
         RoundedRectangle(
-          cornerRadius: EmojiMatchPanelChrome.cornerRadius,
+          cornerRadius: .ds.radius.full,
           style: .continuous
         )
       )
@@ -204,8 +199,8 @@ private struct EmojiMatchPanelSurface<Content: View>: View {
 
   @ViewBuilder
   private var panelBorder: some View {
-    RoundedRectangle(cornerRadius: EmojiMatchPanelChrome.cornerRadius, style: .continuous)
-      .stroke(Color.white.opacity(0.14), lineWidth: 1)
+    RoundedRectangle(cornerRadius: .ds.radius.full, style: .continuous)
+      .stroke(Color.ds.separator, lineWidth: .ds.stroke.thin)
   }
 }
 
@@ -213,12 +208,12 @@ private struct EmojiMatchPanelMaterialView: NSViewRepresentable {
   func makeNSView(context: Context) -> NSGlassEffectView {
     let view = NSGlassEffectView()
     view.style = .regular
-    view.cornerRadius = EmojiMatchPanelChrome.cornerRadius
+    view.cornerRadius = .ds.radius.full
     return view
   }
 
   func updateNSView(_ nsView: NSGlassEffectView, context: Context) {
     nsView.style = .regular
-    nsView.cornerRadius = EmojiMatchPanelChrome.cornerRadius
+    nsView.cornerRadius = .ds.radius.full
   }
 }

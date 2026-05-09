@@ -40,16 +40,19 @@ struct App: SwiftUI.App {
   private func openLauncher() {
     AccessibilityPermission.requestIfNeeded()
     let panel = EmojiMatchPanel(initialContentSize: Constants.launcherInitialContentSize) { close in
-      ContentView(onSubmit: {
-        close()
-        DispatchQueue.main.async {
-          guard let emoji = MockRandomEmojiSource.randomEmoji() else {
-            return
-          }
+      LauncherBar(
+        onSubmit: {
+          close()
+          DispatchQueue.main.async {
+            guard let emoji = MockRandomEmojiSource.randomEmoji() else {
+              return
+            }
 
-          TextPasteController.paste(emoji)
-        }
-      })
+            TextPasteController.paste(emoji)
+          }
+        },
+        onOpenLibrary: {}
+      )
     }
     panel.show(anchorRect: TextAnchorResolver.anchorRect())
   }

@@ -1,13 +1,46 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "launcherLibraryButtonHint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Press Tab to open the emoji library"
+          }
+        }
+      }
+    },
+    "launcherLibraryButtonLabel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open emoji library"
+          }
+        }
+      }
+    },
+    "launcherLibraryButtonTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Browse"
+          }
+        }
+      }
+    },
     "launcherSearchPlaceholder" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Search"
+            "value" : "Emoji for..."
           }
         }
       }
@@ -35,5 +68,5 @@
       }
     }
   },
-  "version" : "1.0"
+  "version" : "1.1"
 }
