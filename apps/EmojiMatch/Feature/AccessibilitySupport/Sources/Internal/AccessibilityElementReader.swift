@@ -195,6 +195,37 @@ struct AccessibilityElementReader {
     ) as? String
   }
 
+  func lineNumber(for index: Int, in element: AXUIElement) -> Int? {
+    let value = parameterizedAttribute(
+      kAXLineForIndexParameterizedAttribute as CFString,
+      parameter: NSNumber(value: index),
+      from: element
+    )
+
+    return (value as? NSNumber)?.intValue
+  }
+
+  func rangeForLine(_ line: Int, in element: AXUIElement) -> CFRange? {
+    guard
+      let value = parameterizedAttribute(
+        kAXRangeForLineParameterizedAttribute as CFString,
+        parameter: NSNumber(value: line),
+        from: element
+      ),
+      CFGetTypeID(value) == AXValueGetTypeID()
+    else {
+      return nil
+    }
+
+    let rangeValue = unsafeBitCast(value, to: AXValue.self)
+    var range = CFRange()
+    guard AXValueGetValue(rangeValue, .cfRange, &range) else {
+      return nil
+    }
+
+    return range
+  }
+
   func textMarkerSelectionBounds(
     for selectedTextMarkerRange: AXTextMarkerRange,
     in element: AXUIElement

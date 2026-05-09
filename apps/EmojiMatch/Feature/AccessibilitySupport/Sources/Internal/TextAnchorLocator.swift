@@ -74,7 +74,18 @@ private extension TextAnchorLocator {
 
     let candidates = candidateElements(from: lineage)
 
-    for element in candidates where isTextInputCandidate(element) {
+    if isTextInputCandidate(focusedElement) {
+      let inputElementRect = editableElementRect(for: focusedElement)
+      if anchorRect(for: focusedElement, elementRect: inputElementRect) != nil {
+        return TextAnchorContext(element: focusedElement)
+      }
+    }
+
+    let nonFocusedCandidates = candidates.filter {
+      elements.elementIdentifier(for: $0) != elements.elementIdentifier(for: focusedElement)
+    }
+
+    for element in nonFocusedCandidates where isTextInputCandidate(element) {
       let inputElementRect = editableElementRect(for: element)
 
       if let selectedTextMarkerRange = elements.selectedTextMarkerRange(for: element),
@@ -89,32 +100,54 @@ private extension TextAnchorLocator {
           elementRect: inputElementRect
         )
       {
-        return TextAnchorContext(
-          element: element,
-          selectedTextRange: elements.selectedTextRange(for: element)
-            ?? CFRange(location: 0, length: 0),
-          selectedTextMarkerRange: selectedTextMarkerRange
-        )
+        return TextAnchorContext(element: element)
       }
+    }
 
+    for element in nonFocusedCandidates where isTextInputCandidate(element) {
+      let inputElementRect = editableElementRect(for: element)
       if let selectedTextRange = elements.selectedTextRange(for: element),
         selectionBounds(
           for: selectedTextRange,
           in: element,
           elementRect: inputElementRect
         ) != nil
-          || adjacentCharacterRect(for: selectedTextRange, in: element) != nil
-          || estimatedCaretRect(
-            for: element,
-            selectedTextRange: selectedTextRange,
-            elementRect: inputElementRect
-          ) != nil
       {
-        return TextAnchorContext(
-          element: element,
+        return TextAnchorContext(element: element)
+      }
+    }
+
+    for element in nonFocusedCandidates where isTextInputCandidate(element) {
+      if let selectedTextRange = elements.selectedTextRange(for: element),
+        adjacentCharacterRect(for: selectedTextRange, in: element) != nil
+      {
+        return TextAnchorContext(element: element)
+      }
+    }
+
+    for element in nonFocusedCandidates where isTextInputCandidate(element) {
+      let inputElementRect = editableElementRect(for: element)
+      if let selectedTextRange = elements.selectedTextRange(for: element),
+        lineRangeCaretRect(
+          for: selectedTextRange,
+          in: element,
+          elementRect: inputElementRect
+        ) != nil
+      {
+        return TextAnchorContext(element: element)
+      }
+    }
+
+    for element in nonFocusedCandidates where isTextInputCandidate(element) {
+      let inputElementRect = editableElementRect(for: element)
+      if let selectedTextRange = elements.selectedTextRange(for: element),
+        estimatedCaretRect(
+          for: element,
           selectedTextRange: selectedTextRange,
-          selectedTextMarkerRange: nil
-        )
+          elementRect: inputElementRect
+        ) != nil
+      {
+        return TextAnchorContext(element: element)
       }
     }
 
@@ -162,40 +195,71 @@ private extension TextAnchorLocator {
   func anchorRect(for textContext: TextAnchorContext) -> CGRect? {
     let inputElementRect = editableElementRect(for: textContext.element)
 
-    if let selectedTextMarkerRange = textContext.selectedTextMarkerRange,
+    return anchorRect(for: textContext.element, elementRect: inputElementRect)
+  }
+
+  func anchorRect(for element: AXUIElement, elementRect inputElementRect: CGRect?) -> CGRect? {
+    guard let selectedTextRange = elements.selectedTextRange(for: element) else {
+      return nil
+    }
+
+    if let selectedTextMarkerRange = elements.selectedTextMarkerRange(for: element),
       let bounds = elements.textMarkerSelectionBounds(
         for: selectedTextMarkerRange,
-        in: textContext.element
+        in: element
       ),
       isPlausibleCaretRect(
         bounds,
-        for: textContext.selectedTextRange,
-        in: textContext.element,
+        for: selectedTextRange,
+        in: element,
         elementRect: inputElementRect
       )
     {
-      return bounds
+      return adjustedCaretRect(
+        bounds,
+        for: selectedTextRange,
+        in: element,
+        elementRect: inputElementRect
+      )
     }
 
     if let bounds = selectionBounds(
-      for: textContext.selectedTextRange,
-      in: textContext.element,
+      for: selectedTextRange,
+      in: element,
       elementRect: inputElementRect
     ) {
-      return bounds
+      return adjustedCaretRect(
+        bounds,
+        for: selectedTextRange,
+        in: element,
+        elementRect: inputElementRect
+      )
     }
 
     if let bounds = adjacentCharacterRect(
-      for: textContext.selectedTextRange,
-      in: textContext.element
+      for: selectedTextRange,
+      in: element
+    ) {
+      return adjustedCaretRect(
+        bounds,
+        for: selectedTextRange,
+        in: element,
+        elementRect: inputElementRect
+      )
+    }
+
+    if let bounds = lineRangeCaretRect(
+      for: selectedTextRange,
+      in: element,
+      elementRect: inputElementRect
     ) {
       return bounds
     }
 
     // Final text-aware fallback when AX exposes selection but not caret geometry.
     if let bounds = estimatedCaretRect(
-      for: textContext.element,
-      selectedTextRange: textContext.selectedTextRange,
+      for: element,
+      selectedTextRange: selectedTextRange,
       elementRect: inputElementRect
     ) {
       return bounds
@@ -216,6 +280,12 @@ private extension TextAnchorLocator {
     for selectedTextRange: CFRange,
     in element: AXUIElement
   ) -> CGRect? {
+    if let text = elements.stringValue(of: element).map(NSString.init),
+      FocusedTextAnchorHeuristics.isAtLineStart(in: text, selectedTextRange: selectedTextRange)
+    {
+      return nil
+    }
+
     for range in FocusedTextAnchorHeuristics.candidateCharacterRanges(for: selectedTextRange) {
       var mutableRange = range
       guard let rangeValue = AXValueCreate(.cfRange, &mutableRange),
@@ -238,6 +308,34 @@ private extension TextAnchorLocator {
     }
 
     return nil
+  }
+
+  func lineRangeCaretRect(
+    for selectedTextRange: CFRange,
+    in element: AXUIElement,
+    elementRect: CGRect?
+  ) -> CGRect? {
+    guard
+      let text = elements.stringValue(of: element).map(NSString.init),
+      FocusedTextAnchorHeuristics.isAtLineStart(in: text, selectedTextRange: selectedTextRange),
+      let insertionIndex = FocusedTextAnchorHeuristics.insertionIndex(
+        in: text,
+        for: selectedTextRange
+      ),
+      let lineNumber = elements.lineNumber(for: insertionIndex, in: element),
+      let lineRange = elements.rangeForLine(lineNumber, in: element),
+      let lineRangeValue = rangeValue(for: lineRange),
+      let lineBounds = elements.boundsForRangeValue(lineRangeValue, in: element)
+    else {
+      return nil
+    }
+
+    return CGRect(
+      x: lineBounds.minX,
+      y: lineBounds.minY,
+      width: 1,
+      height: lineBounds.height
+    )
   }
 
   func estimatedCaretRect(
@@ -284,7 +382,7 @@ private extension TextAnchorLocator {
         for: selectedTextRange
       )
     {
-      return FocusedTextAnchorHeuristics.newlineCount(in: text.substring(to: insertionIndex))
+      return FocusedTextAnchorHeuristics.visualLineIndex(in: text.substring(to: insertionIndex))
     }
 
     return max(elements.insertionPointLine(of: element).map { $0 - 1 } ?? 0, 0)
@@ -295,7 +393,7 @@ private extension TextAnchorLocator {
     selectedTextRange: CFRange,
     in elementRect: CGRect
   ) -> CGFloat {
-    let minX = elementRect.minX + FocusedTextAnchorHeuristics.estimatedTextHorizontalInset
+    let minX = elementRect.minX + leadingTextInset(for: element, in: elementRect)
     let maxX = max(
       minX,
       elementRect.maxX - FocusedTextAnchorHeuristics.estimatedTextHorizontalInset
@@ -366,6 +464,12 @@ private extension TextAnchorLocator {
       return false
     }
 
+    if let text = elements.stringValue(of: element).map(NSString.init),
+      FocusedTextAnchorHeuristics.isAtLineStart(in: text, selectedTextRange: selectedTextRange)
+    {
+      return true
+    }
+
     // Some multiline editors report a previous-line caret rect for empty lines. Compare the
     // AX-provided rect against the text-derived line position and reject only clearly off-line
     // results so we can fall back to the estimated caret instead.
@@ -382,6 +486,77 @@ private extension TextAnchorLocator {
 
     let allowedVerticalDelta = max(8, min(bounds.height, estimatedBounds.height) * 0.75)
     return abs(bounds.midY - estimatedBounds.midY) <= allowedVerticalDelta
+  }
+
+  func adjustedCaretRect(
+    _ rect: CGRect,
+    for selectedTextRange: CFRange,
+    in element: AXUIElement,
+    elementRect: CGRect?
+  ) -> CGRect {
+    guard
+      selectedTextRange.length == 0,
+      isSingleLineTextElement(element),
+      let elementRect
+    else {
+      return rect
+    }
+
+    let minimumTextX = elementRect.minX + leadingTextInset(for: element, in: elementRect)
+    guard rect.minX < minimumTextX else {
+      return rect
+    }
+
+    return CGRect(
+      x: minimumTextX,
+      y: rect.minY,
+      width: rect.width,
+      height: rect.height
+    )
+  }
+
+  func leadingTextInset(for element: AXUIElement, in elementRect: CGRect) -> CGFloat {
+    let baseInset =
+      elements.role(of: element) == "AXSearchField"
+      ? FocusedTextAnchorHeuristics.estimatedSearchFieldHorizontalInset
+      : FocusedTextAnchorHeuristics.estimatedTextHorizontalInset
+
+    return FocusedTextAnchorHeuristics.horizontalInset(
+      baseInset: baseInset,
+      elementMinX: elementRect.minX,
+      leadingAccessoryTrailingEdge: leadingAccessoryTrailingEdge(
+        in: element, elementRect: elementRect)
+    )
+  }
+
+  func leadingAccessoryTrailingEdge(
+    in element: AXUIElement,
+    elementRect: CGRect
+  ) -> CGFloat? {
+    let leadingLimit =
+      elementRect.minX + FocusedTextAnchorHeuristics.maximumEstimatedAccessoryTextInset
+    let childEdges = elements.childElements(of: element)
+      .compactMap { child -> CGFloat? in
+        guard
+          !isEditableTextElement(child),
+          let childRect = elements.elementRect(for: child),
+          childRect.minX >= elementRect.minX,
+          childRect.maxX <= leadingLimit,
+          childRect.midY >= elementRect.minY,
+          childRect.midY <= elementRect.maxY
+        else {
+          return nil
+        }
+
+        return childRect.maxX
+      }
+
+    return childEdges.max()
+  }
+
+  func rangeValue(for range: CFRange) -> AXValue? {
+    var mutableRange = range
+    return AXValueCreate(.cfRange, &mutableRange)
   }
 }
 

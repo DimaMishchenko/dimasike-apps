@@ -7,6 +7,7 @@ private enum EmojiMatchPanelChrome {
   static let cornerRadius: CGFloat = 40
 }
 
+@MainActor
 final class EmojiMatchPanel<Content: View>: NSPanel {
   init(
     initialContentSize: CGSize,
@@ -107,20 +108,6 @@ final class EmojiMatchPanel<Content: View>: NSPanel {
     NSScreen.screens.first { $0.frame.intersects(rect) }
   }
 
-  private func rectInScreenCoordinates(_ rect: CGRect) -> CGRect {
-    let desktopFrame = NSScreen.screens.reduce(into: CGRect.null) { partialResult, screen in
-      partialResult = partialResult.union(screen.frame)
-    }
-
-    // Accessibility bounds use a top-left desktop origin; AppKit window placement uses bottom-left.
-    return CGRect(
-      x: rect.minX,
-      y: desktopFrame.maxY - rect.maxY,
-      width: rect.width,
-      height: rect.height
-    )
-  }
-
   private func focusFirstTextField() {
     DispatchQueue.main.async { [weak self] in
       guard let self, let textField = firstTextField(in: contentView) else {
@@ -149,6 +136,10 @@ final class EmojiMatchPanel<Content: View>: NSPanel {
     return nil
   }
 
+  private func rectInScreenCoordinates(_ rect: CGRect) -> CGRect {
+    AccessibilityCoordinateConverter.appKitRect(fromTopLeftRect: rect)
+  }
+
   private static func defaultPanelSize(for contentSize: CGSize) -> CGSize {
     CGSize(
       width: contentSize.width + (EmojiMatchPanelChrome.contentPadding * 2),
@@ -162,6 +153,28 @@ final class EmojiMatchPanel<Content: View>: NSPanel {
   override func resignKey() {
     super.resignKey()
     close()
+  }
+}
+
+private enum AccessibilityCoordinateConverter {
+  static func appKitRect(fromTopLeftRect rect: CGRect) -> CGRect {
+    let baselineY = primaryScreenFrame().maxY
+
+    // AX-style bounds use a top-left origin anchored to the primary display, not the union of every
+    // attached display. Using the union breaks whenever an external screen sits above the built-in.
+    return CGRect(
+      x: rect.minX,
+      y: baselineY - rect.maxY,
+      width: rect.width,
+      height: rect.height
+    )
+  }
+
+  private static func primaryScreenFrame() -> CGRect {
+    NSScreen.screens.first { $0.frame.origin == .zero }?.frame
+      ?? NSScreen.main?.frame
+      ?? NSScreen.screens.first?.frame
+      ?? .zero
   }
 }
 

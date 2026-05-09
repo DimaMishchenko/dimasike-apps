@@ -36,6 +36,14 @@ import Testing
     #expect(rangeDescriptions(ranges) == ["0:1"])
   }
 
+  @Test func candidateCharacterRangesRejectUnknownSelection() {
+    let ranges = FocusedTextAnchorHeuristics.candidateCharacterRanges(
+      for: CFRange(location: kCFNotFound, length: 0)
+    )
+
+    #expect(ranges.isEmpty)
+  }
+
   @Test func insertionIndexClampsToStringBounds() {
     let text = NSString(string: "hello")
 
@@ -61,6 +69,57 @@ import Testing
         in: text,
         for: CFRange(location: kCFNotFound, length: 0)
       ) == nil
+    )
+  }
+
+  @Test func lineStartRecognizesDocumentAndNewlineStarts() {
+    let text = NSString(string: "hello\nworld")
+
+    #expect(
+      FocusedTextAnchorHeuristics.isAtLineStart(
+        in: text,
+        selectedTextRange: CFRange(location: 0, length: 0)
+      )
+    )
+    #expect(
+      FocusedTextAnchorHeuristics.isAtLineStart(
+        in: text,
+        selectedTextRange: CFRange(location: 6, length: 0)
+      )
+    )
+    #expect(
+      !FocusedTextAnchorHeuristics.isAtLineStart(
+        in: text,
+        selectedTextRange: CFRange(location: 7, length: 0)
+      )
+    )
+  }
+
+  @Test func visualLineIndexCollapsesTrailingStructuralNewlines() {
+    #expect(FocusedTextAnchorHeuristics.visualLineIndex(in: "title") == 0)
+    #expect(FocusedTextAnchorHeuristics.visualLineIndex(in: "title\n") == 1)
+    #expect(FocusedTextAnchorHeuristics.visualLineIndex(in: "title\n\n") == 2)
+    #expect(FocusedTextAnchorHeuristics.visualLineIndex(in: "title\n\n\n") == 2)
+    #expect(FocusedTextAnchorHeuristics.visualLineIndex(in: "title\nbody\n") == 2)
+  }
+
+  @Test func horizontalInsetUsesLeadingAccessoryTrailingEdge() {
+    #expect(
+      FocusedTextAnchorHeuristics.horizontalInset(
+        baseInset: 12,
+        elementMinX: 20,
+        leadingAccessoryTrailingEdge: 56
+      ) == 44
+    )
+  }
+
+  @Test func horizontalInsetCapsLargeAccessoryValues() {
+    #expect(
+      FocusedTextAnchorHeuristics.horizontalInset(
+        baseInset: 12,
+        elementMinX: 20,
+        leadingAccessoryTrailingEdge: 200
+      ) == FocusedTextAnchorHeuristics.maximumEstimatedAccessoryTextInset
     )
   }
 }

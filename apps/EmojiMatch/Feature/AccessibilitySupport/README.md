@@ -46,8 +46,9 @@ The resolver prefers:
 1. exact AX text marker bounds
 2. exact AX selected-range bounds
 3. nearby character bounds
-4. estimated caret position from text content and selection
-5. `nil` so the app can fall back to screen center
+4. AX line range bounds at line starts
+5. estimated caret position from text content and selection
+6. `nil` so the app can fall back to screen center
 
 It also enables `AXManualAccessibility` on the frontmost app to improve support for Electron and
 WebView wrappers.

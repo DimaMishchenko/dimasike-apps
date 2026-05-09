@@ -17,7 +17,10 @@ Repository structure:
 - Only put reusable cross-app modules in `Package.swift`. App-specific modules and tests must live
   under `apps/` and be modeled with Tuist/local targets instead of SwiftPM targets.
 - App code lives under `apps/` and is managed through Tuist manifests.
-- Tuist generates the workspace/projects used for app builds and runs. If app files or Tuist manifests change, regenerate with:
+- Tuist generates the workspace/projects used for app builds and runs. Regenerate when Tuist
+  manifests, package dependencies, target structure, or buildable folder membership changes. Do not
+  regenerate for source-only edits inside existing buildable folders.
+  Regenerate with:
   `tuist generate --no-open`
 
 Use the `swift` CLI for SwiftPM package workflows at the repository root, including `swift build`, `swift test`, and other package-oriented commands.
