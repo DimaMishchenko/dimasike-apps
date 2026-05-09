@@ -2,6 +2,8 @@ import ProjectDescription
 
 let emojiMatchTargetSettings = Settings.settings(
   base: [
+    "CODE_SIGN_IDENTITY": "Apple Development: Dmytro Mishchenko (K2R6A39AKU)",
+    "CODE_SIGN_STYLE": "Manual",
     "SWIFT_APPROACHABLE_CONCURRENCY": "YES",
     "SWIFT_DEFAULT_ACTOR_ISOLATION": "MainActor",
     "STRING_CATALOG_GENERATE_SYMBOLS": "YES"
