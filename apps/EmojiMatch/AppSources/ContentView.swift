@@ -7,26 +7,34 @@ struct ContentView: View {
   private let colors = Color.ds
 
   var body: some View {
-    TextField(String(localized: .launcherSearchPlaceholder), text: $query)
-      .textFieldStyle(.plain)
-      .font(.ds.body)
-      .padding(.horizontal, .ds.spacing.sm)
-      .padding(.vertical, .ds.spacing.xs)
-      .frame(maxWidth: .infinity, maxHeight: .infinity)
-      .background(
-        RoundedRectangle(cornerRadius: .ds.radius.md, style: .continuous)
-          .fill(colors.surface)
-          .overlay(
-            RoundedRectangle(cornerRadius: .ds.radius.md, style: .continuous)
-              .stroke(colors.separator, lineWidth: .ds.stroke.thin)
-          )
-      )
-      .padding(.horizontal, .ds.spacing.sm)
-      .padding(.vertical, .ds.spacing.xs)
-      .onSubmit {
-        onSubmit()
-      }
-      .ignoresSafeArea()
+    HStack(spacing: .ds.spacing.xs) {
+      Image(systemName: "magnifyingglass")
+        .font(.system(size: 16, weight: .medium))
+        .foregroundStyle(colors.textSecondary)
+
+      TextField(String(localized: .launcherSearchPlaceholder), text: $query)
+        .textFieldStyle(.plain)
+        .font(.ds.body)
+        .foregroundStyle(colors.textPrimary)
+        .onSubmit {
+          onSubmit()
+        }
+    }
+    .padding(.horizontal, .ds.spacing.md)
+    .padding(.vertical, 10)
+    .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+    .background(
+      Capsule(style: .continuous)
+        .fill(.ultraThinMaterial)
+        .overlay(
+          Capsule(style: .continuous)
+            .fill(Color.white.opacity(0.08))
+        )
+        .overlay(
+          Capsule(style: .continuous)
+            .stroke(Color.white.opacity(0.14), lineWidth: .ds.stroke.thin)
+        )
+    )
   }
 }
 
@@ -35,6 +43,6 @@ struct ContentView: View {
     Spacer()
       .frame(height: 8)
     ContentView(onSubmit: {})
-      .frame(width: 360, height: 44)
+      .frame(width: 344)
   }
 }

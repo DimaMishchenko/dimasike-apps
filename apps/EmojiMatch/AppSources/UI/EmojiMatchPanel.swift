@@ -1,14 +1,18 @@
 import AppKit
 import SwiftUI
 
-private let emojiMatchPanelAnchorSpacing: CGFloat = 8
+private enum EmojiMatchPanelChrome {
+  static let anchorSpacing: CGFloat = 8
+  static let contentPadding: CGFloat = 16
+  static let cornerRadius: CGFloat = 40
+}
 
 final class EmojiMatchPanel<Content: View>: NSPanel {
   init(
-    initialSize: CGSize,
+    initialContentSize: CGSize,
     @ViewBuilder content: @escaping (@escaping () -> Void) -> Content
   ) {
-    let frame = CGRect(origin: .zero, size: initialSize)
+    let frame = CGRect(origin: .zero, size: Self.defaultPanelSize(for: initialContentSize))
     super
       .init(
         contentRect: frame,
@@ -26,8 +30,10 @@ final class EmojiMatchPanel<Content: View>: NSPanel {
     hasShadow = true
     animationBehavior = .utilityWindow
     contentView = NSHostingView(
-      rootView: content { [weak self] in
-        self?.close()
+      rootView: EmojiMatchPanelSurface(contentWidth: initialContentSize.width) {
+        content { [weak self] in
+          self?.close()
+        }
       }
     )
   }
@@ -67,8 +73,7 @@ final class EmojiMatchPanel<Content: View>: NSPanel {
 
     let screenRect = rectInScreenCoordinates(anchorRect)
 
-    guard let screen = screen(containing: screenRect)
-    else {
+    guard let screen = screen(containing: screenRect) else {
       center(on: activeScreen())
       return
     }
@@ -80,8 +85,8 @@ final class EmojiMatchPanel<Content: View>: NSPanel {
       visibleFrame.maxX - size.width
     )
 
-    let preferredAboveY = screenRect.maxY + emojiMatchPanelAnchorSpacing
-    let preferredBelowY = screenRect.minY - size.height - emojiMatchPanelAnchorSpacing
+    let preferredAboveY = screenRect.maxY + EmojiMatchPanelChrome.anchorSpacing
+    let preferredBelowY = screenRect.minY - size.height - EmojiMatchPanelChrome.anchorSpacing
     let y: CGFloat
 
     if preferredAboveY + size.height <= visibleFrame.maxY {
@@ -118,9 +123,7 @@ final class EmojiMatchPanel<Content: View>: NSPanel {
 
   private func focusFirstTextField() {
     DispatchQueue.main.async { [weak self] in
-      guard let self,
-        let textField = firstTextField(in: contentView)
-      else {
+      guard let self, let textField = firstTextField(in: contentView) else {
         return
       }
 
@@ -146,11 +149,63 @@ final class EmojiMatchPanel<Content: View>: NSPanel {
     return nil
   }
 
+  private static func defaultPanelSize(for contentSize: CGSize) -> CGSize {
+    CGSize(
+      width: contentSize.width + (EmojiMatchPanelChrome.contentPadding * 2),
+      height: contentSize.height + (EmojiMatchPanelChrome.contentPadding * 2)
+    )
+  }
+
   override var canBecomeKey: Bool { true }
   override var canBecomeMain: Bool { true }
 
   override func resignKey() {
     super.resignKey()
     close()
+  }
+}
+
+private struct EmojiMatchPanelSurface<Content: View>: View {
+  let contentWidth: CGFloat
+  @ViewBuilder let content: () -> Content
+
+  var body: some View {
+    content()
+      .frame(width: contentWidth, alignment: .leading)
+      .padding(EmojiMatchPanelChrome.contentPadding)
+      .background(panelBackground)
+      .overlay(panelBorder)
+      .fixedSize()
+  }
+
+  @ViewBuilder
+  private var panelBackground: some View {
+    EmojiMatchPanelMaterialView()
+      .clipShape(
+        RoundedRectangle(
+          cornerRadius: EmojiMatchPanelChrome.cornerRadius,
+          style: .continuous
+        )
+      )
+  }
+
+  @ViewBuilder
+  private var panelBorder: some View {
+    RoundedRectangle(cornerRadius: EmojiMatchPanelChrome.cornerRadius, style: .continuous)
+      .stroke(Color.white.opacity(0.14), lineWidth: 1)
+  }
+}
+
+private struct EmojiMatchPanelMaterialView: NSViewRepresentable {
+  func makeNSView(context: Context) -> NSGlassEffectView {
+    let view = NSGlassEffectView()
+    view.style = .regular
+    view.cornerRadius = EmojiMatchPanelChrome.cornerRadius
+    return view
+  }
+
+  func updateNSView(_ nsView: NSGlassEffectView, context: Context) {
+    nsView.style = .regular
+    nsView.cornerRadius = EmojiMatchPanelChrome.cornerRadius
   }
 }

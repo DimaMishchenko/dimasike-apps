@@ -5,7 +5,7 @@ import SwiftUI
 @main
 struct App: SwiftUI.App {
   private enum Constants {
-    static let launcherInitialSize = CGSize(width: 344, height: 44)
+    static let launcherInitialContentSize = CGSize(width: 344, height: 44)
   }
 
   @State private var settings = AppSettings()
@@ -39,7 +39,7 @@ struct App: SwiftUI.App {
 
   private func openLauncher() {
     AccessibilityPermission.requestIfNeeded()
-    let panel = EmojiMatchPanel(initialSize: Constants.launcherInitialSize) { close in
+    let panel = EmojiMatchPanel(initialContentSize: Constants.launcherInitialContentSize) { close in
       ContentView(onSubmit: {
         close()
         DispatchQueue.main.async {
