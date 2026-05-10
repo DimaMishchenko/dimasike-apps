@@ -2,12 +2,37 @@ import AppKit
 import DesignSystem
 import SwiftUI
 
+private enum EmojiMatchPanelMetrics {
+  static let panelInset: CGFloat = .ds.spacing.xxs
+}
+
 @MainActor
 final class EmojiMatchPanel<Content: View>: NSPanel {
+  private enum ResizeAnchor {
+    case top
+    case bottom
+  }
+
+  private let initialContentSize: CGSize
+  private let maximumContentSize: CGSize
+  private let onClose: () -> Void
+  // Keeps the caret-facing edge fixed when the launcher expands into the emoji library.
+  private var resizeAnchor = ResizeAnchor.bottom
+
   init(
     initialContentSize: CGSize,
-    @ViewBuilder content: @escaping (@escaping () -> Void) -> Content
+    maximumContentSize: CGSize? = nil,
+    onClose: @escaping () -> Void = {},
+    @ViewBuilder content:
+      @escaping (
+        _ close: @escaping () -> Void,
+        _ setExpanded: @escaping (Bool) -> Void
+      ) -> Content
   ) {
+    self.initialContentSize = initialContentSize
+    self.maximumContentSize = maximumContentSize ?? initialContentSize
+    self.onClose = onClose
+
     let frame = CGRect(origin: .zero, size: Self.defaultPanelSize(for: initialContentSize))
     super
       .init(
@@ -24,12 +49,20 @@ final class EmojiMatchPanel<Content: View>: NSPanel {
     isOpaque = false
     backgroundColor = .clear
     hasShadow = true
-    animationBehavior = .utilityWindow
     contentView = NSHostingView(
-      rootView: EmojiMatchPanelSurface(contentWidth: initialContentSize.width) {
-        content { [weak self] in
-          self?.close()
-        }
+      rootView: EmojiMatchPanelSurface(
+        contentWidth: initialContentSize.width,
+        minimumContentHeight: initialContentSize.height,
+        panelInset: EmojiMatchPanelMetrics.panelInset
+      ) {
+        content(
+          { [weak self] in
+            self?.close()
+          },
+          { [weak self] isExpanded in
+            self?.setExpanded(isExpanded)
+          }
+        )
       }
     )
   }
@@ -76,24 +109,33 @@ final class EmojiMatchPanel<Content: View>: NSPanel {
 
     let visibleFrame = screen.visibleFrame
     let size = frame.size
+    let maximumSize = Self.defaultPanelSize(for: maximumContentSize)
     let x = min(
       max(screenRect.midX - (size.width / 2), visibleFrame.minX),
       visibleFrame.maxX - size.width
     )
 
-    let preferredAboveY = screenRect.maxY + CGFloat.ds.spacing.xs
-    let preferredBelowY = screenRect.minY - size.height - CGFloat.ds.spacing.xs
+    let spacing = CGFloat.ds.spacing.xs
+    let preferredAboveY = screenRect.maxY + spacing
+    let preferredBelowY = screenRect.minY - size.height - spacing
+    let maximumBelowY = screenRect.minY - maximumSize.height - spacing
+    let maximumAboveY = preferredAboveY + maximumSize.height
+    let availableAbove = visibleFrame.maxY - screenRect.maxY
+    let availableBelow = screenRect.minY - visibleFrame.minY
     let y: CGFloat
 
-    if preferredAboveY + size.height <= visibleFrame.maxY {
-      y = preferredAboveY
-    } else if preferredBelowY >= visibleFrame.minY {
+    if maximumBelowY >= visibleFrame.minY {
       y = preferredBelowY
+      resizeAnchor = .top
+    } else if maximumAboveY <= visibleFrame.maxY {
+      y = preferredAboveY
+      resizeAnchor = .bottom
+    } else if availableAbove >= availableBelow {
+      y = min(max(preferredAboveY, visibleFrame.minY), visibleFrame.maxY - size.height)
+      resizeAnchor = .bottom
     } else {
-      y = min(
-        max(preferredAboveY, visibleFrame.minY),
-        visibleFrame.maxY - size.height
-      )
+      y = min(max(preferredBelowY, visibleFrame.minY), visibleFrame.maxY - size.height)
+      resizeAnchor = .top
     }
 
     setFrame(CGRect(x: x, y: y, width: size.width, height: size.height), display: false)
@@ -137,8 +179,8 @@ final class EmojiMatchPanel<Content: View>: NSPanel {
 
   private static func defaultPanelSize(for contentSize: CGSize) -> CGSize {
     CGSize(
-      width: contentSize.width + (CGFloat.ds.spacing.xs * 2),
-      height: contentSize.height + (CGFloat.ds.spacing.xs * 2)
+      width: contentSize.width + (EmojiMatchPanelMetrics.panelInset * 2),
+      height: contentSize.height + (EmojiMatchPanelMetrics.panelInset * 2)
     )
   }
 
@@ -148,6 +190,38 @@ final class EmojiMatchPanel<Content: View>: NSPanel {
   override func resignKey() {
     super.resignKey()
     close()
+  }
+
+  override func close() {
+    super.close()
+    onClose()
+  }
+
+  private func resize(toContentSize contentSize: CGSize) {
+    let normalizedContentSize = CGSize(
+      width: initialContentSize.width,
+      height: max(contentSize.height, initialContentSize.height)
+    )
+    let nextSize = Self.defaultPanelSize(for: normalizedContentSize)
+
+    guard abs(frame.width - nextSize.width) > 0.5 || abs(frame.height - nextSize.height) > 0.5
+    else {
+      return
+    }
+
+    let nextY =
+      switch resizeAnchor {
+      case .top:
+        frame.maxY - nextSize.height
+      case .bottom:
+        frame.minY
+      }
+    let nextFrame = CGRect(x: frame.minX, y: nextY, width: nextSize.width, height: nextSize.height)
+    setFrame(nextFrame, display: true, animate: true)
+  }
+
+  private func setExpanded(_ isExpanded: Bool) {
+    resize(toContentSize: isExpanded ? maximumContentSize : initialContentSize)
   }
 }
 
@@ -175,45 +249,56 @@ private enum AccessibilityCoordinateConverter {
 
 private struct EmojiMatchPanelSurface<Content: View>: View {
   let contentWidth: CGFloat
+  let minimumContentHeight: CGFloat
+  let panelInset: CGFloat
   @ViewBuilder let content: () -> Content
 
+  private func panelCornerRadius(for size: CGSize) -> CGFloat {
+    size.height > minimumContentHeight + (panelInset * 2) + 1 ? .ds.radius.xl : .ds.radius.full
+  }
+
   var body: some View {
-    content()
-      .frame(width: contentWidth, alignment: .leading)
-      .padding(.ds.spacing.xs)
+    contentView
       .background(panelBackground)
       .overlay(panelBorder)
       .fixedSize()
   }
 
   @ViewBuilder
-  private var panelBackground: some View {
-    EmojiMatchPanelMaterialView()
+  private var contentView: some View {
+    content()
+      .frame(width: contentWidth, alignment: .topLeading)
+      .frame(minHeight: minimumContentHeight, alignment: .topLeading)
+      .padding(panelInset)
       .clipShape(
         RoundedRectangle(
-          cornerRadius: .ds.radius.full,
+          cornerRadius: .ds.radius.xl,
           style: .continuous
         )
       )
   }
 
   @ViewBuilder
+  private var panelBackground: some View {
+    GeometryReader { proxy in
+      let radius = panelCornerRadius(for: proxy.size)
+      let shape = RoundedRectangle(cornerRadius: radius, style: .continuous)
+
+      shape
+        .fill(.clear)
+        .glassEffect(.regular, in: shape)
+        .compositingGroup()
+        .clipShape(shape)
+    }
+  }
+
+  @ViewBuilder
   private var panelBorder: some View {
-    RoundedRectangle(cornerRadius: .ds.radius.full, style: .continuous)
-      .stroke(Color.ds.separator, lineWidth: .ds.stroke.thin)
-  }
-}
+    GeometryReader { proxy in
+      let radius = panelCornerRadius(for: proxy.size)
+      let shape = RoundedRectangle(cornerRadius: radius, style: .continuous)
 
-private struct EmojiMatchPanelMaterialView: NSViewRepresentable {
-  func makeNSView(context: Context) -> NSGlassEffectView {
-    let view = NSGlassEffectView()
-    view.style = .regular
-    view.cornerRadius = .ds.radius.full
-    return view
-  }
-
-  func updateNSView(_ nsView: NSGlassEffectView, context: Context) {
-    nsView.style = .regular
-    nsView.cornerRadius = .ds.radius.full
+      shape.stroke(Color.ds.separator, lineWidth: .ds.stroke.thin)
+    }
   }
 }
